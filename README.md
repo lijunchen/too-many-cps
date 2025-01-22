@@ -9,6 +9,7 @@ Collect and implement CPS transformation algorithms in OCaml, Rust, and MoonBit.
 | Naive                  |   [code](ocaml/lib/fischer_plotkin_cps.ml)   |   [code](rust/naive.rs)  |    [code](moonbit/naive/cps.mbt)    |
 | Higher Order           |   [code](ocaml/lib/nielson_one_pass_cps.ml)   |   [code](rust/higher_order.rs)  |    [code](moonbit/higher_order/cps.mbt)    |
 | Nine Steps             |   [code](ocaml/lib/danvy_nine_steps.ml)   |   ×  |    ×    |
+| Properly Tail Recursive|   [code](ocaml/lib/danvy_tail_cps.ml)   |   ×  |    ×    |
 | TODO...                |   ×   |   ×  |    ×    |
 
 ### [How to compile with continuations](https://matt.might.net/articles/cps-conversion/) by Matt Might.
