@@ -1,6 +1,6 @@
 # Too Many CPS
 
-Collect and implement CPS algorithms in OCaml, Rust, and MoonBit.
+Collect and implement CPS transformation algorithms in OCaml, Rust, and MoonBit.
 
 ### *Representing control: A study of the CPS transformation* by Olivier Danvy and Andrzej Filinski.
 
