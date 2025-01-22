@@ -1,0 +1,11 @@
+[package]
+name = "too-many-cps"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+path = "rust/lib.rs"
+
+[dependencies]
+expect-test = "1.5.1"

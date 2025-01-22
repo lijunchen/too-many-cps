@@ -1,0 +1,4 @@
+(executable
+ (public_name too_many_cps)
+ (name main)
+ (libraries too_many_cps))
