@@ -18,7 +18,7 @@ Collect and implement CPS algorithms in OCaml, Rust, and MoonBit.
 | Naive                  |   [code](ocaml/lib/matt_naive_cps.ml)   |   ×  |    ×    |
 | Higher Order           |   [code](ocaml/lib/matt_higher_order_cps.ml)   |   ×  |    ×    |
 | Hybrid                 |   [code](ocaml/lib/matt_hybrid_cps.ml)   |   ×  |    ×    |
-| Rich                   |   [code](ocaml/lib/matt_ocaml/lib/rich_cps.ml)   |   ×  |    ×    |
+| Rich                   |   [code](ocaml/lib/matt_rich_cps.ml)   |   ×  |    ×    |
 
 ### *Compiling with continuations, continued* by Andrew Kennedy.
 
