@@ -30,13 +30,11 @@ let rec cps (e : expr) (k : expr -> expr) : expr =
 
 and cps' (e : expr) (k : expr) : expr =
   match e with
-  | Var _ -> App(k, e)
-  | Lam(x, m) ->
-    let j = gensym "j" in
-    App(k, Lam(x, Lam(j, cps' m (Var j))))
-  | App(m, n) ->
-    cps m (fun vm -> cps n (fun vn -> App(App(vm, vn), k)))
-
+  | Var _ -> App (k, e)
+  | Lam (x, m) ->
+      let j = gensym "j" in
+      App (k, Lam (x, Lam (j, cps' m (Var j))))
+  | App (m, n) -> cps m (fun vm -> cps n (fun vn -> App (App (vm, vn), k)))
 
 let id x = x
 
@@ -91,8 +89,7 @@ let%expect_test _ =
   [%expect {| λf.λx.λy.((f y) x) |}];
   let t = cps e id in
   string_of_expr t |> print_endline;
-  [%expect
-    {| λf.λj1.(j1 λx.λj2.(j2 λy.λj3.((f y) λa4.((a4 x) j3)))) |}]
+  [%expect {| λf.λj1.(j1 λx.λj2.(j2 λy.λj3.((f y) λa4.((a4 x) j3)))) |}]
 
 let%expect_test _ =
   reset ();
