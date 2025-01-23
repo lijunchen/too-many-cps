@@ -27,8 +27,9 @@ let id x = x
 let rec normalize (e : expr) (k : expr -> expr) : expr =
   match e with
   | Int _ | Var _ -> k e
-  | Lam (name, body) -> k (Lam (name, normalize_term body))
-  | Let (name, e, m) -> normalize e (fun ve -> Let (name, ve, normalize m k))
+  | Lam (params, body) -> k (Lam (params, normalize_term body))
+  | Let (name, value, body) ->
+      normalize value (fun ve -> Let (name, ve, normalize body k))
   | If (cond, m1, m2) ->
       normalize_name cond (fun vc ->
           k (If (vc, normalize_term m1, normalize_term m2)))

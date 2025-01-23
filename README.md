@@ -36,3 +36,5 @@ also known as ANF (A-Normal Form)
 |           | OCaml | Rust | MoonBit |
 |-----------|:-----:|:----:|:-------:|
 | Figure 9: A linear-time A-normalization algorithm|   [code](ocaml/lib/flanagan_anf.ml)   |   ×  |    ×    |
+| ↑↑↑ Syntax Partitioned Version |   [code](ocaml/lib/syntax_partitioned_anf.ml)   |   ×  |    ×    |
+
