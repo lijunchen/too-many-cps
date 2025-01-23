@@ -24,7 +24,9 @@ let is_value (e : expr) : bool =
 
 let id x = x
 
-let rec normalize (e : expr) (k : expr -> expr) : expr =
+let rec normalize_term (e : expr) : expr = normalize e id
+
+and normalize (e : expr) (k : expr -> expr) : expr =
   match e with
   | Int _ | Var _ -> k e
   | Lam (params, body) -> k (Lam (params, normalize_term body))
@@ -37,8 +39,6 @@ let rec normalize (e : expr) (k : expr -> expr) : expr =
   | App (f, args) ->
       normalize_name f (fun vf ->
           normalize_names args (fun vargs -> k (App (vf, vargs))))
-
-and normalize_term (e : expr) : expr = normalize e id
 
 and normalize_name (e : expr) (k : expr -> expr) : expr =
   normalize e (fun ve ->
@@ -100,7 +100,6 @@ let%expect_test "003" =
 
 let%expect_test "004" =
   reset ();
-
   let e =
     Let
       ( "f",
@@ -135,6 +134,7 @@ let%expect_test "004" =
     |}]
 
 let%expect_test "005" =
+  reset ();
   let e =
     Prim ("*", [ Prim ("+", [ Int 1; Int 2 ]); Prim ("+", [ Int 3; Int 4 ]) ])
   in
@@ -142,13 +142,14 @@ let%expect_test "005" =
   show_expr a |> print_endline;
   [%expect
     {|
-    (Let ("t4", (Prim ("+", [(Int 1); (Int 2)])),
-       (Let ("t5", (Prim ("+", [(Int 3); (Int 4)])),
-          (Prim ("*", [(Var "t4"); (Var "t5")]))))
+    (Let ("t1", (Prim ("+", [(Int 1); (Int 2)])),
+       (Let ("t2", (Prim ("+", [(Int 3); (Int 4)])),
+          (Prim ("*", [(Var "t1"); (Var "t2")]))))
        ))
     |}]
 
 let%expect_test "006" =
+  reset ();
   let e =
     Let
       ( "x",
@@ -172,21 +173,21 @@ let%expect_test "006" =
   [%expect
     {|
     (Let ("a", (Int 1),
-       (Let ("t6", (Prim ("<", [(Var "a"); (Int 2)])),
-          (Let ("t7",
-             (If ((Var "t6"), (Prim ("+", [(Int 3); (Int 4)])),
+       (Let ("t1", (Prim ("<", [(Var "a"); (Int 2)])),
+          (Let ("t2",
+             (If ((Var "t1"), (Prim ("+", [(Int 3); (Int 4)])),
                 (Prim ("+", [(Int 5); (Int 6)])))),
              (Let ("x",
-                (If ((Var "t7"),
+                (If ((Var "t2"),
                    (Let ("a", (Int 7),
-                      (Let ("t9", (Prim ("<", [(Var "a"); (Int 8)])),
-                         (If ((Var "t9"), (Prim ("+", [(Int 9); (Int 10)])),
+                      (Let ("t4", (Prim ("<", [(Var "a"); (Int 8)])),
+                         (If ((Var "t4"), (Prim ("+", [(Int 9); (Int 10)])),
                             (Prim ("+", [(Int 11); (Int 12)]))))
                          ))
                       )),
                    (Let ("a", (Int 13),
-                      (Let ("t8", (Prim ("<", [(Var "a"); (Int 14)])),
-                         (If ((Var "t8"), (Prim ("+", [(Int 15); (Int 16)])),
+                      (Let ("t3", (Prim ("<", [(Var "a"); (Int 14)])),
+                         (If ((Var "t3"), (Prim ("+", [(Int 15); (Int 16)])),
                             (Prim ("+", [(Int 17); (Int 18)]))))
                          ))
                       ))

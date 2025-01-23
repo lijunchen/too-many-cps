@@ -33,7 +33,6 @@ and aexpr = ACExpr of cexpr | ALet of var * cexpr * aexpr
 [@@deriving show { with_path = false }]
 
 let aexpr_of_cexpr (c : cexpr) : aexpr = ACExpr c
-let cexpr_of_immexpr (i : immexpr) : cexpr = CImm i
 
 let rec normalize_term (e : expr) = normalize e aexpr_of_cexpr
 
@@ -117,7 +116,6 @@ let%expect_test "003" =
 
 let%expect_test "004" =
   reset ();
-
   let e =
     Let
       ( "f",
@@ -153,6 +151,7 @@ let%expect_test "004" =
     |}]
 
 let%expect_test "005" =
+  reset ();
   let e =
     Prim ("*", [ Prim ("+", [ Int 1; Int 2 ]); Prim ("+", [ Int 3; Int 4 ]) ])
   in
@@ -160,13 +159,14 @@ let%expect_test "005" =
   show_aexpr a |> print_endline;
   [%expect
     {|
-    (ALet ("t4", (CPrim ("+", [(ImmInt 1); (ImmInt 2)])),
-       (ALet ("t5", (CPrim ("+", [(ImmInt 3); (ImmInt 4)])),
-          (ACExpr (CPrim ("*", [(ImmVar "t4"); (ImmVar "t5")])))))
+    (ALet ("t1", (CPrim ("+", [(ImmInt 1); (ImmInt 2)])),
+       (ALet ("t2", (CPrim ("+", [(ImmInt 3); (ImmInt 4)])),
+          (ACExpr (CPrim ("*", [(ImmVar "t1"); (ImmVar "t2")])))))
        ))
     |}]
 
 let%expect_test "006" =
+  reset ();
   let e =
     Let
       ( "x",
@@ -190,26 +190,26 @@ let%expect_test "006" =
   [%expect
     {|
     (ALet ("a", (CImm (ImmInt 1)),
-       (ALet ("t7", (CPrim ("<", [(ImmVar "a"); (ImmInt 2)])),
-          (ALet ("t6",
-             (CIf ((ImmVar "t7"),
+       (ALet ("t2", (CPrim ("<", [(ImmVar "a"); (ImmInt 2)])),
+          (ALet ("t1",
+             (CIf ((ImmVar "t2"),
                 (ACExpr (CPrim ("+", [(ImmInt 3); (ImmInt 4)]))),
                 (ACExpr (CPrim ("+", [(ImmInt 5); (ImmInt 6)]))))),
              (ALet ("x",
-                (CIf ((ImmVar "t6"),
+                (CIf ((ImmVar "t1"),
                    (ALet ("a", (CImm (ImmInt 7)),
-                      (ALet ("t9", (CPrim ("<", [(ImmVar "a"); (ImmInt 8)])),
+                      (ALet ("t4", (CPrim ("<", [(ImmVar "a"); (ImmInt 8)])),
                          (ACExpr
-                            (CIf ((ImmVar "t9"),
+                            (CIf ((ImmVar "t4"),
                                (ACExpr (CPrim ("+", [(ImmInt 9); (ImmInt 10)]))),
                                (ACExpr (CPrim ("+", [(ImmInt 11); (ImmInt 12)])))
                                )))
                          ))
                       )),
                    (ALet ("a", (CImm (ImmInt 13)),
-                      (ALet ("t8", (CPrim ("<", [(ImmVar "a"); (ImmInt 14)])),
+                      (ALet ("t3", (CPrim ("<", [(ImmVar "a"); (ImmInt 14)])),
                          (ACExpr
-                            (CIf ((ImmVar "t8"),
+                            (CIf ((ImmVar "t3"),
                                (ACExpr (CPrim ("+", [(ImmInt 15); (ImmInt 16)]))),
                                (ACExpr (CPrim ("+", [(ImmInt 17); (ImmInt 18)])))
                                )))
