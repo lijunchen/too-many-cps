@@ -28,3 +28,11 @@ Collect and implement CPS transformation algorithms in OCaml, Rust, and MoonBit.
 | Untyped Naive          |   [code](ocaml/lib/andrew_kennedy_untyped_naive_cps.ml)   |   ×  |    ×    |
 | Untyped Tail           |   [code](ocaml/lib/andrew_kennedy_untyped_tail_cps.ml)   |   ×  |    ×    |
 | TODO...                |   ×   |   ×  |    ×    |
+
+### *The essence of compiling with continuations* by Cormac Flanagan, Amr Sabry, Bruce F. Duba, Matthias Felleisen.
+
+also known as ANF (A-Normal Form)
+
+|           | OCaml | Rust | MoonBit |
+|-----------|:-----:|:----:|:-------:|
+| Figure 9: A linear-time A-normalization algorithm|   [code](ocaml/lib/flanagan_anf.ml)   |   ×  |    ×    |
