@@ -13,13 +13,13 @@ enum Expr {
 enum ImmExpr {
   ImmInt(Int)
   ImmVar(String)
+  ImmLam(Array[String], AExpr)
 } derive(Show)
 
 ///|
 enum CExpr {
   CImm(ImmExpr)
   CPrim(String, Array[ImmExpr])
-  CLam(Array[String], AExpr)
   CApp(ImmExpr, Array[ImmExpr])
   CIf(ImmExpr, AExpr, AExpr)
 } derive(Show)
@@ -60,7 +60,7 @@ fn normalize(e : Expr, k : (CExpr) -> AExpr) -> AExpr {
   match e {
     Int(x) => k(CImm(ImmInt(x)))
     Var(x) => k(CImm(ImmVar(x)))
-    Lam(params, body) => k(CLam(params, normalize_term(body)))
+    Lam(params, body) => k(CImm(ImmLam(params, normalize_term(body))))
     Let(x, e, body) => normalize(e, fn(ve) { ALet(x, ve, normalize(body, k)) })
     If(cond, e1, e2) =>
       normalize_name(cond, fn(vc) {
@@ -158,7 +158,7 @@ test "004" {
   inspect!(
     a,
     content=
-      #|ALet("f", CLam(["n"], ALet("t0", CPrim("=", [ImmVar("n"), ImmInt(0)]), ACExpr(CIf(ImmVar("t0"), ACExpr(CImm(ImmInt(1))), ALet("t2", CPrim("-", [ImmVar("n"), ImmInt(1)]), ALet("t1", CApp(ImmVar("f"), [ImmVar("t2")]), ACExpr(CPrim("*", [ImmVar("n"), ImmVar("t1")])))))))), ACExpr(CApp(ImmVar("f"), [ImmInt(20)])))
+      #|ALet("f", CImm(ImmLam(["n"], ALet("t0", CPrim("=", [ImmVar("n"), ImmInt(0)]), ACExpr(CIf(ImmVar("t0"), ACExpr(CImm(ImmInt(1))), ALet("t2", CPrim("-", [ImmVar("n"), ImmInt(1)]), ALet("t1", CApp(ImmVar("f"), [ImmVar("t2")]), ACExpr(CPrim("*", [ImmVar("n"), ImmVar("t1")]))))))))), ACExpr(CApp(ImmVar("f"), [ImmInt(20)])))
     ,
   )
 }

@@ -20,7 +20,7 @@ type expr =
 [@@deriving show { with_path = false }]
 
 let is_value (e : expr) : bool =
-  match e with Int _ | Var _ -> true | _ -> false
+  match e with Int _ | Var _ | Lam _ -> true | _ -> false
 
 let id x = x
 

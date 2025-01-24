@@ -19,13 +19,12 @@ type expr =
   | If of expr * expr * expr
 [@@deriving show { with_path = false }]
 
-type immexpr = ImmInt of int | ImmVar of var
+type immexpr = ImmInt of int | ImmVar of var | ImmLam of var list * aexpr
 [@@deriving show { with_path = false }]
 
 and cexpr =
   | CImm of immexpr
   | CPrim of string * immexpr list
-  | CLam of var list * aexpr
   | CApp of immexpr * immexpr list
   | CIf of immexpr * aexpr * aexpr
 
@@ -40,7 +39,7 @@ and normalize (e : expr) (k : cexpr -> aexpr) : aexpr =
   match e with
   | Int x -> k (CImm (ImmInt x))
   | Var x -> k (CImm (ImmVar x))
-  | Lam (params, body) -> k (CLam (params, normalize_term body))
+  | Lam (params, body) -> k (CImm (ImmLam (params, normalize_term body)))
   | Let (x, e, body) -> normalize e (fun ve -> ALet (x, ve, normalize body k))
   | If (cond, e1, e2) ->
       normalize_name cond (fun vc ->
@@ -136,17 +135,19 @@ let%expect_test "004" =
   [%expect
     {|
     (ALet ("f",
-       (CLam (["n"],
-          (ALet ("t1", (CPrim ("=", [(ImmVar "n"); (ImmInt 0)])),
-             (ACExpr
-                (CIf ((ImmVar "t1"), (ACExpr (CImm (ImmInt 1))),
-                   (ALet ("t3", (CPrim ("-", [(ImmVar "n"); (ImmInt 1)])),
-                      (ALet ("t2", (CApp ((ImmVar "f"), [(ImmVar "t3")])),
-                         (ACExpr (CPrim ("*", [(ImmVar "n"); (ImmVar "t2")])))))
-                      ))
-                   )))
-             ))
-          )),
+       (CImm
+          (ImmLam (["n"],
+             (ALet ("t1", (CPrim ("=", [(ImmVar "n"); (ImmInt 0)])),
+                (ACExpr
+                   (CIf ((ImmVar "t1"), (ACExpr (CImm (ImmInt 1))),
+                      (ALet ("t3", (CPrim ("-", [(ImmVar "n"); (ImmInt 1)])),
+                         (ALet ("t2", (CApp ((ImmVar "f"), [(ImmVar "t3")])),
+                            (ACExpr (CPrim ("*", [(ImmVar "n"); (ImmVar "t2")])))
+                            ))
+                         ))
+                      )))
+                ))
+             ))),
        (ACExpr (CApp ((ImmVar "f"), [(ImmInt 20)])))))
     |}]
 

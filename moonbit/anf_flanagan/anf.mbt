@@ -34,6 +34,7 @@ fn is_value(e : Expr) -> Bool {
   match e {
     Int(_) => true
     Var(_) => true
+    Lam(_) => true
     _ => false
   }
 }
