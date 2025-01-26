@@ -85,7 +85,7 @@ mod tests {
         reset();
         let e = var("x");
         let t = cps(&e);
-        check(&t, expect!["λk1.(k1 x)"]);
+        check(&t, expect!["λk0.(k0 x)"]);
     }
 
     #[test]
@@ -93,7 +93,7 @@ mod tests {
         reset();
         let e = lam("x", var("x"));
         let t = cps(&e);
-        check(&t, expect!["λk1.(k1 λx.λk2.(k2 x))"]);
+        check(&t, expect!["λk0.(k0 λx.λk1.(k1 x))"]);
     }
 
     #[test]
@@ -103,7 +103,7 @@ mod tests {
         let t = cps(&e);
         check(
             &t,
-            expect!["λk1.(λk4.(k4 f) λv2.(λk5.(k5 x) λv3.((v2 v3) k1)))"],
+            expect!["λk0.(λk3.(k3 f) λv1.(λk4.(k4 x) λv2.((v1 v2) k0)))"],
         );
     }
 
@@ -114,7 +114,7 @@ mod tests {
         let t = cps(&e);
         check(
             &t,
-            expect!["λk1.(λk4.(k4 λx.λk5.(k5 x)) λv2.(λk6.(k6 y) λv3.((v2 v3) k1)))"],
+            expect!["λk0.(λk3.(k3 λx.λk4.(k4 x)) λv1.(λk5.(k5 y) λv2.((v1 v2) k0)))"],
         );
     }
 
@@ -126,7 +126,7 @@ mod tests {
             lam("x", lam("y", app(app(var("f"), var("y")), var("x")))),
         );
         let t = cps(&e);
-        check(&t, expect!["λk1.(k1 λf.λk2.(k2 λx.λk3.(k3 λy.λk4.(λk7.(λk10.(k10 f) λv8.(λk11.(k11 y) λv9.((v8 v9) k7))) λv5.(λk12.(k12 x) λv6.((v5 v6) k4))))))"]);
+        check(&t, expect!["λk0.(k0 λf.λk1.(k1 λx.λk2.(k2 λy.λk3.(λk6.(λk9.(k9 f) λv7.(λk10.(k10 y) λv8.((v7 v8) k6))) λv4.(λk11.(k11 x) λv5.((v4 v5) k3))))))"]);
     }
 
     #[test]
@@ -136,7 +136,7 @@ mod tests {
         let t = cps(&e);
         check(
             &t,
-            expect!["λk1.(k1 λf.λk2.(λk5.(k5 f) λv3.(λk6.(k6 x) λv4.((v3 v4) k2))))"],
+            expect!["λk0.(k0 λf.λk1.(λk4.(k4 f) λv2.(λk5.(k5 x) λv3.((v2 v3) k1))))"],
         );
     }
 }

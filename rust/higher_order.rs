@@ -96,7 +96,7 @@ mod tests {
         reset();
         let e = lam("x", var("x"));
         let t = cps(e, Box::new(id));
-        check(&t, expect!["λx.λj1.(j1 x)"]);
+        check(&t, expect!["λx.λj0.(j0 x)"]);
     }
 
     #[test]
@@ -104,7 +104,7 @@ mod tests {
         reset();
         let e = app(var("f"), var("x"));
         let t = cps(e, Box::new(id));
-        check(&t, expect!["((f x) λa1.a1)"]);
+        check(&t, expect!["((f x) λa0.a0)"]);
     }
 
     #[test]
@@ -112,7 +112,7 @@ mod tests {
         reset();
         let e = app(lam("x", var("x")), var("y"));
         let t = cps(e, Box::new(id));
-        check(&t, expect!["((λx.λj2.(j2 x) y) λa1.a1)"]);
+        check(&t, expect!["((λx.λj1.(j1 x) y) λa0.a0)"]);
     }
 
     #[test]
@@ -125,7 +125,7 @@ mod tests {
         let t = cps(e, Box::new(id));
         check(
             &t,
-            expect!["λf.λj1.(j1 λx.λj2.(j2 λy.λj3.((f y) λa5.((a5 x) λa4.(j3 a4)))))"],
+            expect!["λf.λj0.(j0 λx.λj1.(j1 λy.λj2.((f y) λa4.((a4 x) λa3.(j2 a3)))))"],
         );
     }
 
@@ -134,6 +134,6 @@ mod tests {
         reset();
         let e = lam("f", app(var("f"), var("x")));
         let t = cps(e, Box::new(id));
-        check(&t, expect!["λf.λj1.((f x) λa2.(j1 a2))"]);
+        check(&t, expect!["λf.λj0.((f x) λa1.(j0 a1))"]);
     }
 }
