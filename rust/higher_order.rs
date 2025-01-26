@@ -1,18 +1,17 @@
 #![allow(unused)]
 
-static mut COUNTER: u32 = 0;
+use std::sync::atomic::{AtomicU32, Ordering};
+
+static COUNTER: AtomicU32 = AtomicU32::new(0);
 
 fn gensym(name: &str) -> String {
-    unsafe {
-        COUNTER += 1;
-        format!("{}{}", name, COUNTER)
-    }
+    let old = COUNTER.load(Ordering::SeqCst);
+    let count = COUNTER.fetch_add(1, Ordering::SeqCst);
+    format!("{}{}", name, count)
 }
 
 fn reset() {
-    unsafe {
-        COUNTER = 0;
-    }
+    COUNTER.store(0, Ordering::SeqCst);
 }
 
 #[derive(Clone)]
@@ -50,7 +49,7 @@ fn check(actual: &Expr, expect: expect_test::Expect) {
 
 use Expr::*;
 
-fn cps(e: Expr, k: Box<dyn FnOnce(Expr) -> Expr + 'static>) -> Expr {
+fn cps(e: Expr, k: Box<dyn FnOnce(Expr) -> Expr>) -> Expr {
     match e {
         Var(_) => k(e),
         Lam(x, m) => {
